@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_page/database/userData.dart';
+import 'package:login_page/routes/popups/create_new_account.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +12,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String? _username;
   String? _password;
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _passwordField() =>
       TextField(
+        obscureText: true,
           style: const TextStyle(
               color: Colors.black,
               fontSize: 18),
@@ -122,7 +125,8 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                  onPressed: ()=>{},
+                  onPressed: ()=>{
+                  },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black54
                   ),
@@ -131,7 +135,10 @@ class _LoginPageState extends State<LoginPage> {
                     style:  TextStyle(color: Colors.white, fontSize: 10),
                   )),
               ElevatedButton(
-                  onPressed: ()=>{},
+                  onPressed: ()=>{
+                    Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SignUpScreen()))
+                    },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black54,
                   ),
@@ -150,26 +157,40 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _checkCredentials(String userName, String password){
-    for(int i = 0; i<UserData.emails.length; i++){
-      if(userName ==  UserData.emails[i]){
-        if(_password == UserData.passwords[i]){
-          debugPrint('login successful');
+    for(int i = 0; i<UserData.emails.length; i++) {
+      if (userName == UserData.emails[i]) {
+        if (_password == UserData.passwords[i]) {
           _showInputData();
           final snackBar = SnackBar(
-              content: const Text("Login Successful!", style: TextStyle(fontSize: 20)),
+              content: const Text(
+                  "Login Successful!", style: TextStyle(fontSize: 20)),
               padding: const EdgeInsets.all(30.0),
               backgroundColor: Colors.green.shade400);
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }else{
+        } else {
           debugPrint('invalid credentials');
           final snackBar = SnackBar(
-              content: const Text("Invalid credentials!", style: TextStyle(fontSize: 20)),
+              content: const Text(
+                  "Invalid credentials!", style: TextStyle(fontSize: 20)),
               padding: const EdgeInsets.all(30.0),
               backgroundColor: Colors.red.shade400);
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         }
+      } else {
+        debugPrint('You are not registered, Create new account!');
+        final snackBar = SnackBar(
+            content: const Text("You are not registered, Create new account!",
+                style: TextStyle(fontSize: 20)),
+            padding: const EdgeInsets.all(30.0),
+            backgroundColor: Colors.yellow.shade400);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        break;
       }
     }
   }
 }
+// onPressed: () {
+// Navigator.push(
+// context,
+// MaterialPageRoute(builder: (context) => const DestinationPage())
