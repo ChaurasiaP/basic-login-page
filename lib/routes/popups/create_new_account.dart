@@ -21,16 +21,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if(uName == "" || password == "" || cnfPassword == ""){
       debugPrint("Please fill all the details");
+      final snackBar = SnackBar(content: const Text(
+          "Please fill all the details",
+          style: TextStyle(fontSize: 20)),
+          padding: const EdgeInsets.all(30.0),
+          backgroundColor: Colors.red.shade400);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
     }else if(cnfPassword != password){
       debugPrint("Password and Confirm Password do not match");
-    }else{
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: uName, password: password);
-      debugPrint("User Created");
       final snackBar = SnackBar(content: const Text(
-          "You are Successfully Registered with us!", style: TextStyle(fontSize: 20)),
+          "Password and Confirm Password do not match",
+          style: TextStyle(fontSize: 20)),
           padding: const EdgeInsets.all(30.0),
-    backgroundColor: Colors.green.shade400);
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          backgroundColor: Colors.redAccent);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }else {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: uName, password: password);
+        debugPrint("User Created");
+        final snackBar = SnackBar(content: const Text(
+            "You are Successfully Registered with us!",
+            style: TextStyle(fontSize: 20)),
+            padding: const EdgeInsets.all(30.0),
+            backgroundColor: Colors.green.shade400);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }on FirebaseAuthException catch(ex){
+        final snackBar = SnackBar(content:Text(
+          ex.code.toString(),
+            style: const TextStyle(fontSize: 20)),
+            padding: const EdgeInsets.all(30.0),
+            backgroundColor: Colors.red.shade400);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
   }
 
