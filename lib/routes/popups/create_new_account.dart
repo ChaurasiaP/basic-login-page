@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -8,6 +9,31 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  void _createAccount() async{
+    String uName = usernameController.text.trim();
+    String password = passwordController.text.trim();
+    String cnfPassword = confirmPasswordController.text.trim();
+
+    if(uName == "" || password == "" || cnfPassword == ""){
+      debugPrint("Please fill all the details");
+    }else if(cnfPassword != password){
+      debugPrint("Password and Confirm Password do not match");
+    }else{
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: uName, password: password);
+      debugPrint("User Created");
+      final snackBar = SnackBar(content: const Text(
+          "You are Successfully Registered with us!", style: TextStyle(fontSize: 20)),
+          padding: const EdgeInsets.all(30.0),
+    backgroundColor: Colors.green.shade400);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,33 +54,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
 
                 // add user icon
-                Icon(Icons.person_add_rounded, size: 130),
+                const Icon(Icons.person_add_rounded, size: 130),
                 // add user icon ends
 
                 // email input text field
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(
+                      labelStyle: TextStyle(
+                          color: Colors.black54
+                      ),
                       labelText:  "Email",
-                      hintText: "enter your email"
+                      hintText: "enter your email",
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)
+                  )
                   ),
                 ),
                 // email input text field ends
 
                 // password input text field
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  controller: passwordController,
+                  decoration: const InputDecoration(
+                      labelStyle: TextStyle(
+                          color: Colors.black54
+                      ),
                       labelText:  "Password",
-                      hintText: "enter new password"
+                      hintText: "enter new password",
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)
+                    )
                   ),
                 ),
                 // password input text field ends
 
                 // confirm password input text field
-                const TextField(
+                TextField(
+                  controller: confirmPasswordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
+                    labelStyle: TextStyle(
+                      color: Colors.black54
+                    ),
                       labelText:  "Confirm Password",
-                      hintText: "re-enter your password"
+                      hintText: "re-enter your password",
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)
+                      )
                   ),
                 ),
                 // confirm password input text field ends
@@ -65,7 +112,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   // submit button
                   child: ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () => {
+                        _createAccount()
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black54,
                       ),
