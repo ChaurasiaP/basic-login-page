@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login_page/routes/popups/create_new_account.dart';
+import 'package:login_page/routes/userCredentials/create_new_account.dart';
+import 'package:login_page/routes/userCredentials/reset_password.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +17,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false, // to avoid pixel overflow
+
       appBar: AppBar(
         title: const Text("Login Page"),
         backgroundColor: Colors.black,
@@ -29,16 +31,16 @@ class _LoginPageState extends State<LoginPage> {
   // function _page will contain icon
   Widget _page() => Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 38.0),
-          child: Column(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Column (
             children: [
-              Padding(padding: const EdgeInsets.only(top: 80), child: _icon()),
+              Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02), child: _icon()),
               Padding(
-                padding: const EdgeInsets.only(top: 30, bottom: 10),
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: _loginField(),
               ),
               Padding(
-                  padding: const EdgeInsets.only(top: 30, bottom: 10),
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: _passwordField()),
               Padding(
                   padding: const EdgeInsets.only(top: 30),
@@ -61,30 +63,19 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
 
+  var fontStyle = const TextStyle(color: Colors.black, fontSize: 18) ;
+
   Widget _loginField() => TextField(
         controller: userNameController,
-        style: const TextStyle(color: Colors.black, fontSize: 18),
+        style: fontStyle,
         decoration: _loginPageDecoration("Username/Login ID") ,
       );
-
-   _loginPageDecoration(String message) =>
-       InputDecoration(
-           focusedBorder: OutlineInputBorder(
-               borderSide: const BorderSide(color: Colors.black, width: 2),
-               borderRadius: BorderRadius.circular(15.5)),
-           border: OutlineInputBorder(
-             borderSide: const BorderSide(color: Colors.black),
-             borderRadius: BorderRadius.circular(15.5),
-           ),
-           hintText: message);
-
   Widget _passwordField() => TextField(
         controller: passwordController,
         obscureText: true,
-        style: const TextStyle(color: Colors.black, fontSize: 18),
+        style: fontStyle,
         decoration: _loginPageDecoration("enter your password")
       );
-
   Widget _actionButtons() => Column(
         children: [
           ElevatedButton(
@@ -102,7 +93,11 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                  onPressed: () => {},
+                  onPressed: () => {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const ResetPassword())
+                    )
+                  },
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.black54),
                   child: const Text(
@@ -118,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: Colors.black54,
                   ),
                   child: const Text(
-                    "create new account",
+                    "CREATE NEW ACCOUNT",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -128,6 +123,18 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       );
+
+
+  _loginPageDecoration(String message) =>
+      InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(15.5)),
+          border: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.black),
+            borderRadius: BorderRadius.circular(15.5),
+          ),
+          hintText: message);
 
   _checkCredentials() async {
     String email = userNameController.text;

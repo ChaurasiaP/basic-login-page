@@ -14,49 +14,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  void _createAccount() async{
+  void _createAccount() async {
     String uName = usernameController.text.trim();
     String password = passwordController.text.trim();
     String cnfPassword = confirmPasswordController.text.trim();
 
-    if(uName == "" || password == "" || cnfPassword == ""){
+    if (uName == "" || password == "" || cnfPassword == "") {
       debugPrint("Please fill all the details");
-      final snackBar = SnackBar(content: const Text(
-          "Please fill all the details",
-          style: TextStyle(fontSize: 20)),
-          padding: const EdgeInsets.all(30.0),
-          backgroundColor: Colors.red.shade400);
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-    }else if(cnfPassword != password){
+      _showSnackBar("Please fill all the details", Colors.red.shade400);
+    } else if (cnfPassword != password) {
       debugPrint("Password and Confirm Password do not match");
-      const snackBar = SnackBar(content: Text(
-          "Password and Confirm Password do not match",
-          style: TextStyle(fontSize: 20)),
-          padding: EdgeInsets.all(30.0),
-          backgroundColor: Colors.redAccent);
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }else {
+      _showSnackBar("Password and Confirm Password do not match", Colors.redAccent);
+    } else {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: uName, password: password);
         debugPrint("User Created");
-        final snackBar = SnackBar(content: const Text(
-            "You are Successfully Registered with us!",
-            style: TextStyle(fontSize: 20)),
-            padding: const EdgeInsets.all(30.0),
-            backgroundColor: Colors.green.shade400);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }on FirebaseAuthException catch(ex){
-        final snackBar = SnackBar(content:Text(
-          ex.code.toString(),
-            style: const TextStyle(fontSize: 20)),
-            padding: const EdgeInsets.all(30.0),
-            backgroundColor: Colors.red.shade400);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        _showSnackBar(
+            "You are Successfully Registered with us!", Colors.green.shade400);
+      } on FirebaseAuthException catch (ex) {
+        _showSnackBar(ex.code.toString(), Colors.red.shade400);
       }
     }
   }
+
+  void _showSnackBar(String message, Color color) {
+    final snackBar = SnackBar(
+        content: Text(message,
+            style: const TextStyle(fontSize: 20)),
+        padding: const EdgeInsets.all(30.0),
+        backgroundColor: color);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  _signUpPageDecoration(String label, String hint) =>
+       InputDecoration(
+          labelStyle: const TextStyle(
+              color: Colors.black54
+          ),
+          labelText: label,
+          hintText: hint,
+          focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.black)
+          )
+      );
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,32 +87,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // email input text field
                 TextField(
                   controller: usernameController,
-                  decoration: const InputDecoration(
-                      labelStyle: TextStyle(
-                          color: Colors.black54
-                      ),
-                      labelText:  "Email",
-                      hintText: "enter your email",
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black)
-                  )
-                  ),
+                  decoration: _signUpPageDecoration("Email", "Enter Your Email") ,
                 ),
                 // email input text field ends
 
                 // password input text field
                 TextField(
                   controller: passwordController,
-                  decoration: const InputDecoration(
-                      labelStyle: TextStyle(
-                          color: Colors.black54
-                      ),
-                      labelText:  "Password",
-                      hintText: "enter new password",
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)
-                    )
-                  ),
+                  decoration: _signUpPageDecoration("Password", "enter new password"),
                 ),
                 // password input text field ends
 
@@ -117,16 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 TextField(
                   controller: confirmPasswordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(
-                      color: Colors.black54
-                    ),
-                      labelText:  "Confirm Password",
-                      hintText: "re-enter your password",
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black)
-                      )
-                  ),
+                  decoration: _signUpPageDecoration("Confirm Password", "re-enter your password"),
                 ),
                 // confirm password input text field ends
 
