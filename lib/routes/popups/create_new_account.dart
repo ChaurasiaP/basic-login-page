@@ -30,10 +30,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     }else if(cnfPassword != password){
       debugPrint("Password and Confirm Password do not match");
-      final snackBar = SnackBar(content: const Text(
+      const snackBar = SnackBar(content: Text(
           "Password and Confirm Password do not match",
           style: TextStyle(fontSize: 20)),
-          padding: const EdgeInsets.all(30.0),
+          padding: EdgeInsets.all(30.0),
           backgroundColor: Colors.redAccent);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }else {
